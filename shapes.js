@@ -92,6 +92,7 @@ function cubewave() {
     angle -= 0.1;
 }
 
+
 //Perlin noise sample by Filippo Guida
 //https://codepen.io/filippoguida/pen/oOrRWP
 function perlin() {
@@ -99,15 +100,48 @@ function perlin() {
     //noFill();
     for (let i = 1; i < 80; i++) {
         strokeWeight(noise(t));
-        bezier(
-            mouseX,
-            mouseY, //[height/2, i*8, 0, random(8)][sel1%4]
-            noise(t) * width,
-            noise(t * 2) * height,
-            noise(t * 3) * width,
-            noise(t + i * 8) * height,
-            width, [height / 2, i * 8, height, random(8)][sel2 % 4]
-        )
+
+
+
+        if (mouseState == "waiting") {
+            bezier(
+                0, [height / 2, i * 8, 0, random(8)][sel1 % 4],
+                noise(t) * width,
+                noise(t * 2) * height,
+                noise(t * 3) * width,
+                noise(t + i * 8) * height,
+                width, [height / 2, i * 8, height, random(8)][sel2 % 4]
+            )
+        } else if (mouseState == "X") {
+            //clear()
+            bezierStartX = mouseX
+            bezierStartY = mouseY
+            bezier(
+                bezierStartX,
+                bezierStartY, //[height/2, i*8, 0, random(8)][sel1%4],
+                noise(t) * width,
+                noise(t * 2) * height,
+                noise(t * 3) * width,
+                noise(t + i * 8) * height,
+                width, [height / 2, i * 8, height, random(8)][sel2 % 4]
+            )
+        } else if (mouseState == "Y") {
+            //clear()
+            bezierEndX = mouseX
+            bezierEndY = mouseY
+            bezier(
+                bezierStartX,
+                bezierStartY, //[height/2, i*8, 0, random(8)][sel1%4],
+                noise(t) * width,
+                noise(t * 2) * height,
+                noise(t * 3) * width,
+                noise(t + i * 8) * height,
+                bezierEndX, bezierEndY
+            )
+        }
+
+
+
     }
 
     t += 0.02;
@@ -118,6 +152,21 @@ function perlin() {
 
     if (frameCount % 300 == 0)
         sel2++;
+
+}
+
+function mousePressed() {
+    if (mouseState == "waiting") {
+        console.log("waiting")
+        mouseState = "X"
+    } else if (mouseState == "X") {
+        console.log("okX")
+        mouseState = "Y"
+    } else if (mouseState == "Y") {
+        console.log("okY")
+        mouseState = "waiting"
+    }
+
 
 }
 

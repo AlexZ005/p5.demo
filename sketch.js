@@ -1,7 +1,11 @@
 // keep track of what scene you're on by MrCioffiBSSS https://editor.p5js.org/MrCioffiBSSS/sketches/AjaeTa9cE
 var currentScene;
-var debug = "off"
-// checks if you clicked on the mouse (for resetting the scene)
+let mouseState = "waiting"
+let bezierStartY = 0
+let bezierStartX = 0
+let bezierEndY = 0
+let bezierEndX = 0
+    // checks if you clicked on the mouse (for resetting the scene)
 var mouse = false;
 
 
@@ -43,29 +47,29 @@ var buttonPressed = 0;
 
 function setup() {
 
- // setupPiano();
- // setupChords();
-  // setupSynth();
-  setupDrums();
+    // setupPiano();
+    // setupChords();
+    // setupSynth();
+    setupDrums();
 
-  // env = new p5.Envelope();
-  // env.setADSR(0.05,0.1, 0.5,1)
-  // env.setRange(1.2,0)
-  // wave = new p5.Oscillator();
-  // wave.setType('sine')
-  // wave.start();
-  // wave.freq(500)
-  // wave.amp(env)
+    // env = new p5.Envelope();
+    // env.setADSR(0.05,0.1, 0.5,1)
+    // env.setRange(1.2,0)
+    // wave = new p5.Oscillator();
+    // wave.setType('sine')
+    // wave.start();
+    // wave.freq(500)
+    // wave.amp(env)
 
 
     // draw the first scene at the start
     //drawScene4();
 
     // let's you see what scene you're on with the "Console" (below)
-    
-  if (debug == "on"){
-    console.log("Scene #" + currentScene);
-  }
+
+    if (debug == "on") {
+        console.log("Scene #" + currentScene);
+    }
     //setup font
     font = loadFont('fonts/Roboto-Medium.ttf');
     if (mode == "") {
@@ -86,7 +90,7 @@ function setup() {
     delta = 0;
 
     detailX = createSlider(-401, 400, 1);
-    detailX.position(width+50, 125);
+    detailX.position(width + 50, 125);
     detailX.style('width', '80px');
     detailP = createP(detailX.value());
 
@@ -118,26 +122,26 @@ function setup() {
 
     //stop/start scene switching
     closuredTimer(timer1, 1000)
-//    closuredTimer(timer2, 2000)
+        //    closuredTimer(timer2, 2000)
 
     button = createButton("start");
     button.mousePressed(startTimer)
 
-    if (debug == "off"){
-      detailX.hide()
-      sizeSlider.hide()
-      widthSlider.hide()
-      angleSlider.hide()
-      timer.hide()
-      timer1.hide()
-      timer2.hide()
-      button.hide()
-      scoreP.hide()
-      detailP.hide()
-  }
+    if (debug == "off") {
+        detailX.hide()
+        sizeSlider.hide()
+        widthSlider.hide()
+        angleSlider.hide()
+        timer.hide()
+        timer1.hide()
+        timer2.hide()
+        button.hide()
+        scoreP.hide()
+        detailP.hide()
+    }
 
 
-setupDrums()
+    //setupDrums()
 
 }
 
@@ -146,24 +150,24 @@ function closuredTimer(enl, wait) {
     setInterval(timeIt, wait)
 
     sceneTime = createSlider(1, 5, 1);
-    sceneTime.position(width+50, 35);
+    sceneTime.position(width + 50, 35);
     sceneTime.style('width', '80px');
     // sceneTimeValue = createP("sceneTime.value()");
 
     sceneTime1 = createSlider(1, 5, 2);
-    sceneTime1.position(width+50, 65);
+    sceneTime1.position(width + 50, 65);
     sceneTime1.style('width', '80px');
     // sceneTimeValue1 = createP("sceneTime1.value()");
 
     sceneTime2 = createSlider(1, 5, 3);
-    sceneTime2.position(width+50, 95);
+    sceneTime2.position(width + 50, 95);
     sceneTime2.style('width', '80px');
     // sceneTimeValue2 = createP("sceneTime1.value()");
 
-    if (debug="off"){
-      sceneTime.hide()
-      sceneTime1.hide()
-      sceneTime2.hide()
+    if (debug = "off") {
+        sceneTime.hide()
+        sceneTime1.hide()
+        sceneTime2.hide()
     }
 
     function timeIt() {
@@ -173,81 +177,80 @@ function closuredTimer(enl, wait) {
         // sceneTimeValue1.html(sceneTime1.value())
         // sceneTimeValue2.html(sceneTime2.value())
         currentTime = timeline.getCurrentTime()
-        //console.log(options.end)
-        if (currentTime>=options.end){
-          //console.log("reached end")
-          timeline.setCurrentTime(options.start)
+            //console.log(options.end)
+        if (currentTime >= options.end) {
+            //console.log("reached end")
+            timeline.setCurrentTime(options.start)
         }
         //update duration for each item
-        for (i = 1; i<=items.length;i++){
-          items.update({id: i, duration: (items.get(i).end-items.get(i).start)/1000 })
-          //1 get current time
-          
-          //2 check if current item is the one which should play
-          if (items.get(i).start <= currentTime && items.get(i).end >= currentTime)
-          {
-            //console.log("within time" + items.get(i).id)
-            //3 check if correct one plays
-            if (currentScene != items.get(i).id){
-           //4 switch to correct one
-            currentScene = items.get(i).id
-          }
+        for (i = 1; i <= items.length; i++) {
+            items.update({ id: i, duration: (items.get(i).end - items.get(i).start) / 1000 })
+                //1 get current time
 
-          } 
+            //2 check if current item is the one which should play
+            if (items.get(i).start <= currentTime && items.get(i).end >= currentTime) {
+                //console.log("within time" + items.get(i).id)
+                //3 check if correct one plays
+                if (currentScene != items.get(i).id) {
+                    //4 switch to correct one
+                    currentScene = items.get(i).id
+                }
+
+            }
         }
-      //  var set1 = items.get(2).duration
-      
+        //  var set1 = items.get(2).duration
 
-      //   if (count <= set1){
-      //     //switch to scene 2 after 5 seconds
-      //       osc.start();
-      //       playing = true;
-      //       osc.freq(freq, 0.1);
-      //       osc.amp(amp, 0.1);
 
-      //   }        
-      //   //console.log("set1 is " + set1)
-      //   if (count > set1){
-      //     //switch to scene 2 after 5 seconds
-      //     if (currentScene === 1) {
-      //       currentScene = 2;
-      //       console.log("Auto Play Scene #" + currentScene);
-      //       clear()
+        //   if (count <= set1){
+        //     //switch to scene 2 after 5 seconds
+        //       osc.start();
+        //       playing = true;
+        //       osc.freq(freq, 0.1);
+        //       osc.amp(amp, 0.1);
 
-      //       //osc.start();
-      //       playing = true;
-      //       osc.freq(freq, 0.1);
-      //       osc.amp(amp, 0.1);
-      //     }
-      //   }
+        //   }        
+        //   //console.log("set1 is " + set1)
+        //   if (count > set1){
+        //     //switch to scene 2 after 5 seconds
+        //     if (currentScene === 1) {
+        //       currentScene = 2;
+        //       console.log("Auto Play Scene #" + currentScene);
+        //       clear()
 
-      //   if (count > sceneTime1.value() && count <= sceneTime2.value()){
-      //     //switch to scene 2 after 5 seconds
-      //     if (currentScene === 2) {
-      //       currentScene = 3;
-      //       console.log("Auto Play Scene #" + currentScene);
-      //       clear()
+        //       //osc.start();
+        //       playing = true;
+        //       osc.freq(freq, 0.1);
+        //       osc.amp(amp, 0.1);
+        //     }
+        //   }
 
-      //       //osc.start();
-      //       playing = true;
-      //       osc.freq(freq, 0.1);
-      //       osc.amp(amp, 0.1);
-      //     }
-      //   }
+        //   if (count > sceneTime1.value() && count <= sceneTime2.value()){
+        //     //switch to scene 2 after 5 seconds
+        //     if (currentScene === 2) {
+        //       currentScene = 3;
+        //       console.log("Auto Play Scene #" + currentScene);
+        //       clear()
 
-      //   if (count > 15){
-      //     //switch to scene 2 after 5 seconds
-            
-      //       currentScene = 1;
-      //       console.log("Auto Play Scene #" + currentScene);
-      //       //clear()
+        //       //osc.start();
+        //       playing = true;
+        //       osc.freq(freq, 0.1);
+        //       osc.amp(amp, 0.1);
+        //     }
+        //   }
 
-      //       //osc.start();
-      //       playing = true;
-      //       osc.freq(freq, 0.1);
-      //       osc.amp(amp, 0.1);
-      //       count = 0
-      //   }
+        //   if (count > 15){
+        //     //switch to scene 2 after 5 seconds
+
+        //       currentScene = 1;
+        //       console.log("Auto Play Scene #" + currentScene);
+        //       //clear()
+
+        //       //osc.start();
+        //       playing = true;
+        //       osc.freq(freq, 0.1);
+        //       osc.amp(amp, 0.1);
+        //       count = 0
+        //   }
 
     }
 
@@ -260,13 +263,13 @@ function startTimer() {
         buttonPressed = 1
 
 
-      // } else if (currentScene === 2) {
-      //     currentScene = 3;
-      //     clear()
-      // } else if (currentScene === 3) {
-      //     currentScene = 1;
-      //     clear()
-      // }
+        // } else if (currentScene === 2) {
+        //     currentScene = 3;
+        //     clear()
+        // } else if (currentScene === 3) {
+        //     currentScene = 1;
+        //     clear()
+        // }
 
     } else {
         button.html("start timer")
@@ -313,19 +316,19 @@ function draw() {
 
         drawScene3();
     } else if (currentScene === 4) { // same thing as above, just with scene 2's stuff
-      if (mouse === true) {
+        if (mouse === true) {
 
-          mouse = false;
-      }
+            mouse = false;
+        }
 
-      drawScene4();
-  }
+        drawScene4();
+    }
 
     // drawing the text on top of the image for what the current scene is
     fill(0, 0, 0);
     textSize(20);
-    if (debug == "on"){
-      text("Scene #" + currentScene, 0, 20);
+    if (debug == "on") {
+        text("Scene #" + currentScene, 0, 20);
     }
 
 
@@ -383,16 +386,16 @@ function draw() {
 
 var drawScene1 = function() {
     currentScene = 1;
-    perlin() //remove background for flower\
-    //background(200, 175, 175);
+    flower() //remove background for flower\
+        //background(200, 175, 175);
 
 };
 
 var drawScene2 = function() {
     currentScene = 2;
     //    background(150, 150, 175);
-    background(51);
-    perlin()
+    //background(51);
+    archimedeanSpiral()
 
 
 };
@@ -407,32 +410,32 @@ var drawScene3 = function() {
 
 //adding sound sample scene
 var drawScene4 = function() {
-  currentScene = 4;
-  //    background(150, 150, 175);
-  background(51);
-  //archimedeanSpiral();
+    currentScene = 4;
+    //    background(150, 150, 175);
+    background(51);
+    //archimedeanSpiral();
 
-  // push();
-  // line(100,200,150,150)
-  // line(150,150,200,170)
-  // line(200,170,250,170)
-  // line(250,170,250,200)
-  // pop();
+    // push();
+    // line(100,200,150,150)
+    // line(150,150,200,170)
+    // line(200,170,250,170)
+    // line(250,170,250,200)
+    // pop();
 
-  // push();
-  // noFill();
-  // beginShape();
-  // vertex(30, 20);
-  // vertex(85, 20);
-  // vertex(85, 75);
-  // vertex(30, 75);
-  // endShape();
-  // pop();
+    // push();
+    // noFill();
+    // beginShape();
+    // vertex(30, 20);
+    // vertex(85, 20);
+    // vertex(85, 75);
+    // vertex(30, 75);
+    // endShape();
+    // pop();
 
-//  drawPiano();
-//drawChords()
-// drawSynth()
-perlin()
+    //  drawPiano();
+    //drawChords()
+    // drawSynth()
+    drawDrums()
 };
 
 // function mouseClicked() {
@@ -470,11 +473,7 @@ function playOscillator() {
 
 
 function playADSR() {
-  
-  env.play()
-  //playing = true;
+
+    env.play()
+        //playing = true;
 }
-
-
-
-
